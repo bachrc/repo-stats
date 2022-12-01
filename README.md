@@ -19,3 +19,15 @@ Application will be then running on port `5000`
 $ curl localhost:5000/ping
 { "status": "pong" }
 ```
+
+# What did this person do ?
+
+This API will show you insights of the repositories of a user.
+
+What we will test :
+
+- Récupérer la liste des dépots d'un utilisateur
+- Permettre de limiter sur :
+  - Le langage
+  - La license
+- 
