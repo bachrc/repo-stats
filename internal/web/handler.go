@@ -1,9 +1,7 @@
 package web
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/Scalingo/go-utils/logger"
 	"github.com/bachrc/profile-stats/internal/domain"
 	"github.com/sirupsen/logrus"
 
@@ -36,20 +34,6 @@ func NewHandler(log logrus.FieldLogger, port int, fetcher domain.ProfileFetcher)
 	router.HandleFunc("/ping", handler.PongHandler)
 
 	return handler
-}
-
-func (handler *ProfileStatsWebHandler) PongHandler(w http.ResponseWriter, r *http.Request, params map[string]string) error {
-	log := logger.Get(r.Context())
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	pongResponse := handler.fetcher.Pong().Pong
-
-	err := json.NewEncoder(w).Encode(map[string]string{"response": pongResponse})
-	if err != nil {
-		log.WithError(err).Error("Fail to encode JSON")
-	}
-	return nil
 }
 
 func (handler *ProfileStatsWebHandler) Serve() {
