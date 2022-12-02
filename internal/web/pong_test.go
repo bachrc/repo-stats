@@ -16,7 +16,7 @@ type PongResponse struct {
 func TestPong(t *testing.T) {
 	handler := NewHandler(logger.Default(), 9876, githubhttpfetcher.GithubFetcher{})
 
-	t.Run("returns Pepper's score", func(t *testing.T) {
+	t.Run("we shall PONG", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/pong", nil)
 		response := httptest.NewRecorder()
 
