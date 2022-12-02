@@ -6,6 +6,7 @@ github.com/Scalingo/go-utils/errors v1.1.0/go.mod h1:bJP50Ic+y5KafDFBSFRkELufB+F
 github.com/Scalingo/go-utils/logger v1.1.0 h1:wloM9dNhPntCr8W7FicBE4SHx6JHrC/3r/bcbJaSlpo=
 github.com/Scalingo/go-utils/logger v1.1.0/go.mod h1:ZJLfkPJ4kfTAliBBAka0IH06+SS+LmRetKuw00WAe+s=
 github.com/Scalingo/logrus-rollbar v1.4.0/go.mod h1:NDlGhdrfltVSLjElDxRjpqSDzu91zK5jJH4KHNcgf7g=
+github.com/Scalingo/sclng-backend-test-v1 v0.0.0-20220727132804-f7b4ece5f294 h1:02btdYDbj5eveEX2Feb7SW23kQ5InBgV5/pRsYE8gJM=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/frankban/quicktest v1.2.2/go.mod h1:Qh/WofXFeiAFII1aEBu529AtJo6Zg2VHscnEsbBnJ20=

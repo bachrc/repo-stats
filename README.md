@@ -20,12 +20,13 @@ $ curl localhost:5000/ping
 { "status": "pong" }
 ```
 
-# What did this person do ?
+# Profile Stats
 
 This API will show you insights of the repositories of a user.
 
 What we will test :
 
+- Répondre au Pong (mise en place de l'architecture)
 - Récupérer la liste des dépots d'un utilisateur
 - Permettre de limiter sur :
   - Le langage

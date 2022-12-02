@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/Scalingo/sclng-backend-test-v1/internal/web"
+	githubhttpfetcher "github.com/bachrc/profile-stats/internal/github-http-fetcher"
+	"github.com/bachrc/profile-stats/internal/web"
 	"os"
 
 	"github.com/Scalingo/go-utils/logger"
@@ -16,7 +17,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	handler := web.NewHandler(log, cfg.Port)
+	handler := web.NewHandler(log, cfg.Port, githubhttpfetcher.GithubFetcher{})
 
 	handler.Serve()
 }
