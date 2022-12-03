@@ -15,7 +15,7 @@ type PongResponse struct {
 }
 
 func TestPong(t *testing.T) {
-	fetcher := githubhttpfetcher.GithubFetcher{
+	fetcher := &githubhttpfetcher.GithubFetcher{
 		Client: mockClient(t),
 	}
 	statsDomain := domain.NewProfileStats(fetcher)

@@ -2,44 +2,58 @@ package github_http_fetcher
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bachrc/profile-stats/internal/domain"
 	"net/http"
 )
 
 const (
-	githubApiUrl         = "https://api.github.com"
-	GithubPublicReposUrl = githubApiUrl + "/repositories"
+	githubApiUrl                   = "https://api.github.com"
+	GithubPublicReposUrl           = githubApiUrl + "/repositories"
+	GithubLanguagesForRepoTemplate = githubApiUrl + "/repos/%s/languages"
 )
 
-type PublicRepositories []struct {
-	Id       uint   `json:"id"`
-	FullName string `json:"full_name"`
-}
-
-func (repositories PublicRepositories) toDomain() domain.Repositories {
-	var domainRepositories domain.Repositories
-	for _, repository := range repositories {
-		domainRepositories = append(domainRepositories, domain.Repository{
-			Id:   repository.Id,
-			Name: repository.FullName,
-		})
-	}
-
-	return domainRepositories
-}
-
-func (fetcher GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
+func (fetcher *GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
 	request, _ := http.NewRequest(http.MethodGet, GithubPublicReposUrl, nil)
 
-	var repositories PublicRepositories
+	var githubPublicRepositories GithubPublicRepositories
 	response, err := fetcher.Client.Do(request)
 	if err != nil {
 		return domain.Repositories{}, err
 	}
 
-	if err := json.NewDecoder(response.Body).Decode(&repositories); err != nil {
+	if err := json.NewDecoder(response.Body).Decode(&githubPublicRepositories); err != nil {
 		return domain.Repositories{}, err
 	}
 
-	return repositories.toDomain(), nil
+	repositories := githubPublicRepositories.toDomain()
+
+	for i := range repositories {
+		fetcher.wgForLanguages.Add(1)
+		go fetcher.fetchRepositoryLanguages(&repositories[i])
+	}
+
+	fetcher.wgForLanguages.Wait()
+
+	return repositories, nil
+}
+
+func (fetcher *GithubFetcher) fetchRepositoryLanguages(repository *domain.Repository) error {
+	request, _ := http.NewRequest(http.MethodGet, fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), nil)
+
+	var githubLanguages GithubLanguagesForRepository
+	response, err := fetcher.Client.Do(request)
+	if err != nil {
+		return err
+	}
+
+	if err := json.NewDecoder(response.Body).Decode(&githubLanguages); err != nil {
+		return err
+	}
+
+	repository.Languages = githubLanguages.toDomain()
+
+	fetcher.wgForLanguages.Done()
+
+	return nil
 }

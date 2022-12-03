@@ -18,7 +18,8 @@ func main() {
 		os.Exit(-1)
 	}
 
-	handler := web.NewHandler(log, cfg.Port, domain.NewProfileStats(githubhttpfetcher.New()))
+	fetcher := githubhttpfetcher.New()
+	handler := web.NewHandler(log, cfg.Port, domain.NewProfileStats(fetcher))
 
 	handler.Serve()
 }

@@ -26,8 +26,9 @@ func fromDomainRepositories(domainRepositories domain.Repositories) Repositories
 
 func fromDomainRepository(repository domain.Repository) Repository {
 	return Repository{
-		Id:   repository.Id,
-		Name: repository.Name,
+		Id:        repository.Id,
+		Name:      repository.Name,
+		Languages: repository.Languages,
 	}
 }
 
