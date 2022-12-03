@@ -54,6 +54,11 @@ func TestFetchRepositories(t *testing.T) {
 			assert.Contains(t, firstRepository.Languages, "Ruby")
 			assert.Contains(t, firstRepository.Languages, "JavaScript")
 		})
+
+		t.Run("empty repositories return empty languages", func(t *testing.T) {
+			emptyRepository := receivedRepositories[11]
+			assert.Equal(t, emptyRepository.Languages, []string{})
+		})
 	})
 }
 
