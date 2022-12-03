@@ -16,7 +16,7 @@ type Repository struct {
 
 func fromDomainRepositories(domainRepositories domain.Repositories) Repositories {
 	var repositories Repositories
-	for _, domainRepository := range domainRepositories.Repositories {
+	for _, domainRepository := range domainRepositories {
 		repositories = append(repositories, fromDomainRepository(domainRepository))
 	}
 

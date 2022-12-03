@@ -17,7 +17,7 @@ type PublicRepositories []struct {
 }
 
 func (repositories PublicRepositories) toDomain() domain.Repositories {
-	var domainRepositories []domain.Repository
+	var domainRepositories domain.Repositories
 	for _, repository := range repositories {
 		domainRepositories = append(domainRepositories, domain.Repository{
 			Id:   repository.Id,
@@ -25,9 +25,7 @@ func (repositories PublicRepositories) toDomain() domain.Repositories {
 		})
 	}
 
-	return domain.Repositories{
-		Repositories: domainRepositories,
-	}
+	return domainRepositories
 }
 
 func (fetcher GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
