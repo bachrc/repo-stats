@@ -11,30 +11,22 @@ const (
 	GithubPublicReposUrl = githubApiUrl + "/repositories"
 )
 
-type PublicRepositories struct {
-	Repositories []PublicRepository
+type PublicRepositories []struct {
+	Id       uint   `json:"id"`
+	FullName string `json:"full_name"`
 }
 
 func (repositories PublicRepositories) toDomain() domain.Repositories {
 	var domainRepositories []domain.Repository
-	for _, repository := range repositories.Repositories {
-		domainRepositories = append(domainRepositories, repository.toDomain())
+	for _, repository := range repositories {
+		domainRepositories = append(domainRepositories, domain.Repository{
+			Id:   repository.Id,
+			Name: repository.FullName,
+		})
 	}
 
 	return domain.Repositories{
 		Repositories: domainRepositories,
-	}
-}
-
-type PublicRepository struct {
-	Id   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
-func (repository PublicRepository) toDomain() domain.Repository {
-	return domain.Repository{
-		Id:   repository.Id,
-		Name: repository.Name,
 	}
 }
 

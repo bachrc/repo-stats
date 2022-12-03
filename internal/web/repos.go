@@ -7,24 +7,20 @@ import (
 	"net/http"
 )
 
-type Repositories struct {
-	Repositories []Repository
-}
+type Repositories []Repository
 
 type Repository struct {
 	Id   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
-func fromDomainRepositories(repositories domain.Repositories) Repositories {
-	var domainRepositories []Repository
-	for _, repository := range repositories.Repositories {
-		domainRepositories = append(domainRepositories, fromDomainRepository(repository))
+func fromDomainRepositories(domainRepositories domain.Repositories) Repositories {
+	var repositories Repositories
+	for _, domainRepository := range domainRepositories.Repositories {
+		repositories = append(repositories, fromDomainRepository(domainRepository))
 	}
 
-	return Repositories{
-		Repositories: domainRepositories,
-	}
+	return repositories
 }
 
 func fromDomainRepository(repository domain.Repository) Repository {

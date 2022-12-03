@@ -40,7 +40,7 @@ func TestFetchRepositoriesNames(t *testing.T) {
 		_ = json.NewDecoder(response.Body).Decode(&got)
 
 		wantedNumberOfRepos := 100
-		gotNumberOfRepos := len(got.Repositories)
+		gotNumberOfRepos := len(got)
 
 		if gotNumberOfRepos != wantedNumberOfRepos {
 			t.Fatalf("got %d repositories, wanted %d", gotNumberOfRepos, wantedNumberOfRepos)
@@ -48,10 +48,10 @@ func TestFetchRepositoriesNames(t *testing.T) {
 
 		t.Run("first repository must match", func(t *testing.T) {
 			wantedFirstName := "cjmiyake/insoshi"
-			gotFirstName := got.Repositories[0].Name
+			gotFirstName := got[0].Name
 
 			if gotFirstName != wantedFirstName {
-				t.Errorf("got %q, want %q", got, wantedFirstName)
+				t.Errorf("got %q, want %q", gotFirstName, wantedFirstName)
 			}
 		})
 

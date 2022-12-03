@@ -1,8 +1,6 @@
 package domain
 
-type Repositories struct {
-	Repositories []Repository
-}
+type Repositories []Repository
 
 type Repository struct {
 	Id   uint
