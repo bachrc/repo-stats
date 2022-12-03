@@ -15,12 +15,12 @@ import (
 
 func TestFetchRepositories(t *testing.T) {
 	fetcher := githubhttpfetcher.GithubFetcher{
-		Client: mockClient(defaultRoutes(), t),
+		Client: mockClient(t),
 	}
 	statsDomain := domain.NewProfileStats(fetcher)
 	handler := NewHandler(logger.Default(), 9876, statsDomain)
 
-	t.Run("should return most recent repos names", func(t *testing.T) {
+	t.Run("should return repositories without filters", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/repos", nil)
 		response := httptest.NewRecorder()
 
@@ -48,6 +48,12 @@ func TestFetchRepositories(t *testing.T) {
 			assert.Equal(t, uint(10085), lastRepository.Id)
 		})
 
+		t.Run("should synthetize used languages", func(t *testing.T) {
+			firstRepository := receivedRepositories[0]
+
+			assert.Contains(t, firstRepository.Languages, "Ruby")
+			assert.Contains(t, firstRepository.Languages, "JavaScript")
+		})
 	})
 }
 
@@ -61,26 +67,15 @@ func (client MockClient) Do(request *http.Request) (*http.Response, error) {
 	return client.DoFunc(request)
 }
 
-func defaultRoutes() map[string]string {
-	return map[string]string{
-		githubhttpfetcher.GithubPublicReposUrl: "../../test/data/github-data/all-repos.json",
-	}
-}
-
-func mockClient(routes map[string]string, t *testing.T) MockClient {
+func mockClient(t *testing.T) MockClient {
 	return MockClient{
 		DoFunc: func(req *http.Request) (*http.Response, error) {
-			requestedUrl := req.URL.String()
+			requestedGithubPath := req.URL.Path
 
-			textStubPath, exists := routes[requestedUrl]
-
-			if !exists {
-				t.Fatalf("Requested path %s not handled", requestedUrl)
-			}
-
-			file, err := ioutil.ReadFile(textStubPath)
+			stubPath := "../../test/data/github-data" + requestedGithubPath + ".json"
+			file, err := ioutil.ReadFile(stubPath)
 			if err != nil {
-				t.Fatalf("Can't open %s text file", textStubPath)
+				t.Fatalf("Can't open %s text file", stubPath)
 			}
 
 			responseBody := ioutil.NopCloser(bytes.NewReader(file))
