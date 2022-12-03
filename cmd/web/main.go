@@ -18,7 +18,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	fetcher := githubhttpfetcher.New()
+	fetcher := githubhttpfetcher.New(cfg.GithubAccessToken)
 	handler := web.NewHandler(log, cfg.Port, domain.NewProfileStats(fetcher))
 
 	handler.Serve()

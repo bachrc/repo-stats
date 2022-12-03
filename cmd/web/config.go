@@ -6,7 +6,8 @@ import (
 )
 
 type Config struct {
-	Port int `default:"5000"`
+	Port              int `default:"5000"`
+	GithubAccessToken string
 }
 
 func NewConfig() (*Config, error) {

@@ -12,10 +12,12 @@ type HTTPClient interface {
 type GithubFetcher struct {
 	Client         HTTPClient
 	wgForLanguages sync.WaitGroup
+	token          string
 }
 
-func New() *GithubFetcher {
+func New(githubToken string) *GithubFetcher {
 	return &GithubFetcher{
 		Client: &http.Client{},
+		token:  githubToken,
 	}
 }
