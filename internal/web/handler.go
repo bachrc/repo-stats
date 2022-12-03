@@ -11,27 +11,24 @@ import (
 )
 
 type ProfileStatsWebHandler struct {
-	router  handlers.Router
-	port    int
-	log     logrus.FieldLogger
-	fetcher domain.ProfileFetcher
+	router handlers.Router
+	port   int
+	log    logrus.FieldLogger
+	domain domain.RepoStatsDomain
 }
 
-func NewHandler(log logrus.FieldLogger, port int, fetcher domain.ProfileFetcher) ProfileStatsWebHandler {
+func NewHandler(log logrus.FieldLogger, port int, fetcher domain.RepoStatsDomain) ProfileStatsWebHandler {
 	router := *handlers.NewRouter(log)
 
-	// Initialize web server and configure the following routes:
-	// GET /repos
-	// GET /stats
-
 	handler := ProfileStatsWebHandler{
-		router:  router,
-		port:    port,
-		log:     log,
-		fetcher: fetcher,
+		router: router,
+		port:   port,
+		log:    log,
+		domain: fetcher,
 	}
 
 	router.HandleFunc("/ping", handler.PongHandler)
+	router.HandleFunc("/repos", handler.RepositoriesHandler)
 
 	return handler
 }

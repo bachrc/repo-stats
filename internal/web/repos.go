@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"github.com/Scalingo/go-utils/logger"
+	"github.com/bachrc/profile-stats/internal/domain"
 	"net/http"
 )
 
@@ -15,16 +16,44 @@ type Repository struct {
 	Name string `json:"name"`
 }
 
+func fromDomainRepositories(repositories domain.Repositories) Repositories {
+	var domainRepositories []Repository
+	for _, repository := range repositories.Repositories {
+		domainRepositories = append(domainRepositories, fromDomainRepository(repository))
+	}
+
+	return Repositories{
+		Repositories: domainRepositories,
+	}
+}
+
+func fromDomainRepository(repository domain.Repository) Repository {
+	return Repository{
+		Id:   repository.Id,
+		Name: repository.Name,
+	}
+}
+
 func (handler *ProfileStatsWebHandler) RepositoriesHandler(w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	log := logger.Get(r.Context())
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	pongResponse := handler.fetcher.Pong().Pong
+	domainRepositories, err := handler.domain.GetAllRepositories()
 
-	err := json.NewEncoder(w).Encode(map[string]string{"response": pongResponse})
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.WithError(err).Error("Error while fetching repositories")
+		return err
+	}
+
+	repositories := fromDomainRepositories(domainRepositories)
+
+	err = json.NewEncoder(w).Encode(repositories)
 	if err != nil {
 		log.WithError(err).Error("Fail to encode JSON")
+		return err
 	}
+
 	return nil
 }

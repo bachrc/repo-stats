@@ -4,14 +4,15 @@ type PongContent struct {
 	Pong string
 }
 
-type ProfileFetcher interface {
-	Pong() PongContent
+type RepositoriesFetcher interface {
+	Ping() PongContent
+	GetAllRepositories() (Repositories, error)
 }
 
-type ProfileStatsDomain struct {
-	fetcher ProfileFetcher
+type RepoStatsDomain struct {
+	fetcher RepositoriesFetcher
 }
 
-func NewProfileStats(fetcher ProfileFetcher) ProfileStatsDomain {
-	return ProfileStatsDomain{fetcher: fetcher}
+func NewProfileStats(fetcher RepositoriesFetcher) RepoStatsDomain {
+	return RepoStatsDomain{fetcher: fetcher}
 }

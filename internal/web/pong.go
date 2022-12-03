@@ -11,7 +11,7 @@ func (handler *ProfileStatsWebHandler) PongHandler(w http.ResponseWriter, r *htt
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	pongResponse := handler.fetcher.Pong().Pong
+	pongResponse := handler.domain.Ping().Pong
 
 	err := json.NewEncoder(w).Encode(map[string]string{"response": pongResponse})
 	if err != nil {

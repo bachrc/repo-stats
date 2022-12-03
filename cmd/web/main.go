@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/bachrc/profile-stats/internal/domain"
 	githubhttpfetcher "github.com/bachrc/profile-stats/internal/github-http-fetcher"
 	"github.com/bachrc/profile-stats/internal/web"
 	"os"
@@ -17,7 +18,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	handler := web.NewHandler(log, cfg.Port, githubhttpfetcher.GithubFetcher{})
+	handler := web.NewHandler(log, cfg.Port, domain.NewProfileStats(githubhttpfetcher.New()))
 
 	handler.Serve()
 }

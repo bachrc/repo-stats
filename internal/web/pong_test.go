@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"github.com/Scalingo/go-utils/logger"
+	"github.com/bachrc/profile-stats/internal/domain"
 	githubhttpfetcher "github.com/bachrc/profile-stats/internal/github-http-fetcher"
 	"net/http"
 	"net/http/httptest"
@@ -14,7 +15,11 @@ type PongResponse struct {
 }
 
 func TestPong(t *testing.T) {
-	handler := NewHandler(logger.Default(), 9876, githubhttpfetcher.GithubFetcher{})
+	fetcher := githubhttpfetcher.GithubFetcher{
+		Client: mockClient(defaultRoutes(), t),
+	}
+	statsDomain := domain.NewProfileStats(fetcher)
+	handler := NewHandler(logger.Default(), 9876, statsDomain)
 
 	t.Run("we shall PONG", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/pong", nil)
