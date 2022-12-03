@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/Scalingo/go-utils/logger"
 	"github.com/bachrc/profile-stats/internal/domain"
-	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -20,27 +19,19 @@ var (
 )
 
 func (fetcher *GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
-	request, _ := http.NewRequest(http.MethodGet, GithubPublicReposUrl, nil)
-	if fetcher.token != "" {
-		request.Header.Set("Authorization", "Bearer "+fetcher.token)
-	}
-
 	var githubPublicRepositories GithubPublicRepositories
-	response, err := fetcher.Client.Do(request)
-	if err != nil {
-		return domain.Repositories{}, err
-	}
 
-	if err := json.NewDecoder(response.Body).Decode(&githubPublicRepositories); err != nil {
-		logrus.Error(err)
-		return domain.Repositories{}, err
-	}
+	fetcher.fetchResource(GithubPublicReposUrl, &githubPublicRepositories)
 
 	repositories := githubPublicRepositories.toDomain()
 
 	for i := range repositories {
 		fetcher.wgForLanguages.Add(1)
-		go fetcher.fetchRepositoryLanguages(&repositories[i])
+		i := i
+		go func() {
+			fetcher.fetchRepositoryLanguages(&repositories[i])
+			fetcher.wgForLanguages.Done()
+		}()
 	}
 
 	fetcher.wgForLanguages.Wait()
@@ -49,24 +40,33 @@ func (fetcher *GithubFetcher) GetAllRepositories() (domain.Repositories, error) 
 }
 
 func (fetcher *GithubFetcher) fetchRepositoryLanguages(repository *domain.Repository) {
-	defer fetcher.wgForLanguages.Done()
 	log.Infof("Fetching interfaces for %s", repository.Name)
-	request, _ := http.NewRequest(http.MethodGet, fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), nil)
+
+	var githubLanguages GithubLanguagesForRepository
+
+	_ = fetcher.fetchResource(fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), &githubLanguages)
+
+	repository.Languages = githubLanguages.toDomain()
+}
+
+func (fetcher *GithubFetcher) fetchResource(url string, receiverObject interface{}) error {
+	request, _ := http.NewRequest(http.MethodGet, url, nil)
 
 	if fetcher.token != "" {
 		request.Header.Set("Authorization", "Bearer "+fetcher.token)
 	}
-	var githubLanguages GithubLanguagesForRepository
+
 	response, err := fetcher.Client.Do(request)
+
 	if err != nil {
 		log.WithError(err).Error("Request execution failed")
-		return
+		return err
 	}
 
-	if err := json.NewDecoder(response.Body).Decode(&githubLanguages); err != nil {
+	if err := json.NewDecoder(response.Body).Decode(&receiverObject); err != nil {
 		log.WithError(err).Error("Response decoding failed")
-		return
+		return err
 	}
 
-	repository.Languages = githubLanguages.toDomain()
+	return nil
 }
