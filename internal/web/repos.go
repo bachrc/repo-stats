@@ -5,6 +5,7 @@ import (
 	"github.com/Scalingo/go-utils/logger"
 	"github.com/bachrc/profile-stats/internal/domain"
 	"net/http"
+	"net/url"
 )
 
 type Repositories []Repository
@@ -15,6 +16,10 @@ type Repository struct {
 	Languages []string `json:"languages"`
 	License   string   `json:"license"`
 }
+
+var (
+	log = logger.Default()
+)
 
 func fromDomainRepositories(domainRepositories domain.Repositories) Repositories {
 	var repositories Repositories
@@ -35,11 +40,12 @@ func fromDomainRepository(repository domain.Repository) Repository {
 }
 
 func (handler *ProfileStatsWebHandler) RepositoriesHandler(w http.ResponseWriter, r *http.Request, params map[string]string) error {
-	log := logger.Get(r.Context())
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	domainRepositories, err := handler.domain.GetAllRepositories()
+	filters := parseRequestedFilters(r.URL.Query())
+
+	domainRepositories, err := handler.domain.GetAllRepositories(filters)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -56,4 +62,13 @@ func (handler *ProfileStatsWebHandler) RepositoriesHandler(w http.ResponseWriter
 	}
 
 	return nil
+}
+
+func parseRequestedFilters(params url.Values) (filters []domain.RepositoryFilter) {
+	if params.Has("language") {
+		get := params.Get("language")
+		filters = append(filters, domain.LanguageFilter{Language: get})
+	}
+
+	return filters
 }

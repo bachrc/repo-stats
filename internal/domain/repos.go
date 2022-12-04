@@ -9,6 +9,26 @@ type Repository struct {
 	License   string
 }
 
-func (domain RepoStatsDomain) GetAllRepositories() (Repositories, error) {
-	return domain.fetcher.GetAllRepositories()
+func (r Repository) containsLanguage(language string) bool {
+	for i := range r.Languages {
+		if r.Languages[i] == language {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (domain RepoStatsDomain) GetAllRepositories(filters []RepositoryFilter) (Repositories, error) {
+	repositories, err := domain.fetcher.GetAllRepositories()
+
+	if err != nil {
+		return repositories, err
+	}
+
+	for _, filter := range filters {
+		repositories = filter.Filter(repositories)
+	}
+
+	return repositories, nil
 }

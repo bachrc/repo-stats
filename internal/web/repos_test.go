@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
@@ -70,7 +71,7 @@ func TestFetchRepositories(t *testing.T) {
 		t.Run("should filter repositories to include language", func(t *testing.T) {
 			var receivedRepositories Repositories
 
-			fetchResource(t, &handler, "/repos?language=C++", &receivedRepositories)
+			fetchResource(t, &handler, "/repos?language="+url.QueryEscape("C++"), &receivedRepositories)
 
 			assert.Len(t, receivedRepositories, 1)
 			receivedRepository := receivedRepositories[0]
