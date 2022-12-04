@@ -32,7 +32,7 @@ func (repositories GithubPublicRepositories) toDomain() domain.Repositories {
 
 func (license GithubLicenseForRepository) toDomain() string {
 	if license.License == nil {
-		return ""
+		return "none"
 	}
 
 	return license.License.Key
