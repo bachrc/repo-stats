@@ -6,7 +6,7 @@ type PongContent struct {
 
 type RepositoriesFetcher interface {
 	Ping() PongContent
-	GetAllRepositories() (Repositories, error)
+	GetAllRepositories(int) (Repositories, error)
 }
 
 type RepoStatsDomain struct {

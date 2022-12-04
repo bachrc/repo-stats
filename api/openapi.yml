@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  title: Repo-stats
+  description: API description in Markdown.
+  version: 0.0.1
+paths:
+  /repos:
+    get:
+      summary: Returns a list of repositories.
+      description: >
+        Returns a list of Github Repositories (100 maximum), starting from `since` argument, on which you can apply your wanted filters.
+        You can apply :
+        
+        - A filter on the language
+        
+        - A filter on the license
+      parameters:
+        - in: query
+          name: language
+          description: >
+            Filter the repositories to contain the given language
+          example: "Rust"
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: license
+          description: >
+            Filter the repositories to contain the given license
+          example: "mit"
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: since
+          description: >
+            The Github ID from whom the 100 next repositories will be fetched
+          example: 10000
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK

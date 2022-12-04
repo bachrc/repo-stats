@@ -10,7 +10,7 @@ import (
 
 const (
 	githubApiUrl                   = "https://api.github.com"
-	GithubPublicReposUrl           = githubApiUrl + "/repositories"
+	GithubPublicReposUrlTemplate   = githubApiUrl + "/repositories?since=%d"
 	GithubLanguagesForRepoTemplate = githubApiUrl + "/repos/%s/languages"
 	GithubLicenseForRepoTemplate   = githubApiUrl + "/repos/%s/license"
 )
@@ -19,10 +19,10 @@ var (
 	log = logger.Default()
 )
 
-func (fetcher *GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
+func (fetcher *GithubFetcher) GetAllRepositories(startingId int) (domain.Repositories, error) {
 	var githubPublicRepositories GithubPublicRepositories
 
-	if err := fetcher.fetchResource(GithubPublicReposUrl, &githubPublicRepositories); err != nil {
+	if err := fetcher.fetchResource(fmt.Sprintf(GithubPublicReposUrlTemplate, startingId), &githubPublicRepositories); err != nil {
 		return domain.Repositories{}, err
 	}
 

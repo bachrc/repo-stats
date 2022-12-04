@@ -19,8 +19,8 @@ func (r Repository) containsLanguage(language string) bool {
 	return false
 }
 
-func (domain RepoStatsDomain) GetAllRepositories(filters []RepositoryFilter) (Repositories, error) {
-	repositories, err := domain.fetcher.GetAllRepositories()
+func (domain RepoStatsDomain) GetAllRepositories(filters []RepositoryFilter, startingId int) (Repositories, error) {
+	repositories, err := domain.fetcher.GetAllRepositories(startingId)
 
 	if err != nil {
 		return repositories, err

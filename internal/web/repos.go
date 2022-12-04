@@ -6,6 +6,7 @@ import (
 	"github.com/bachrc/profile-stats/internal/domain"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 type Repositories []Repository
@@ -43,9 +44,11 @@ func (handler *ProfileStatsWebHandler) RepositoriesHandler(w http.ResponseWriter
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	filters := parseRequestedFilters(r.URL.Query())
+	queryParams := r.URL.Query()
+	filters := parseRequestedFilters(queryParams)
+	startingId := parseSince(queryParams)
 
-	domainRepositories, err := handler.domain.GetAllRepositories(filters)
+	domainRepositories, err := handler.domain.GetAllRepositories(filters, startingId)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -76,4 +79,16 @@ func parseRequestedFilters(params url.Values) (filters []domain.RepositoryFilter
 	}
 
 	return filters
+}
+
+func parseSince(params url.Values) int {
+	if params.Has("since") {
+		numericValue, err := strconv.Atoi(params.Get("since"))
+		if err != nil {
+			return 0
+		}
+		return numericValue
+	}
+
+	return 0
 }
