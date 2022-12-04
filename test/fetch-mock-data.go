@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	github_http_fetcher "github.com/bachrc/profile-stats/internal/github-http-fetcher"
+	githubhttpfetcher "github.com/bachrc/repo-stats/internal/github-http-fetcher"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -40,7 +40,7 @@ func fetch_license_data() {
 }
 
 func writeLicenseData(repository Repository) {
-	fetcher := github_http_fetcher.New(os.Getenv("GITHUBACCESSTOKEN"))
+	fetcher := githubhttpfetcher.New(os.Getenv("GITHUBACCESSTOKEN"))
 
 	licenseUrl := "https://api.github.com/repos/" + repository.Full_Name + "/license"
 

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/bachrc/profile-stats/internal/domain"
-	githubhttpfetcher "github.com/bachrc/profile-stats/internal/github-http-fetcher"
-	"github.com/bachrc/profile-stats/internal/web"
+	"github.com/bachrc/repo-stats/internal/domain"
+	githubhttpfetcher "github.com/bachrc/repo-stats/internal/github-http-fetcher"
+	"github.com/bachrc/repo-stats/internal/web"
 	"os"
 
 	"github.com/Scalingo/go-utils/logger"

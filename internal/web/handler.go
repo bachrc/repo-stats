@@ -2,7 +2,7 @@ package web
 
 import (
 	"fmt"
-	"github.com/bachrc/profile-stats/internal/domain"
+	"github.com/bachrc/repo-stats/internal/domain"
 	"github.com/sirupsen/logrus"
 
 	//	"github.com/Scalingo/go-handlers"

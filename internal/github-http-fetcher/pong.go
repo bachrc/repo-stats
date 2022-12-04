@@ -1,7 +1,7 @@
 package github_http_fetcher
 
 import (
-	"github.com/bachrc/profile-stats/internal/domain"
+	"github.com/bachrc/repo-stats/internal/domain"
 )
 
 func (fetcher *GithubFetcher) Ping() domain.PongContent {

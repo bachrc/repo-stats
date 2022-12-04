@@ -3,8 +3,8 @@ package web
 import (
 	"encoding/json"
 	"github.com/Scalingo/go-utils/logger"
-	"github.com/bachrc/profile-stats/internal/domain"
-	githubhttpfetcher "github.com/bachrc/profile-stats/internal/github-http-fetcher"
+	"github.com/bachrc/repo-stats/internal/domain"
+	githubhttpfetcher "github.com/bachrc/repo-stats/internal/github-http-fetcher"
 	"net/http"
 	"net/http/httptest"
 	"testing"

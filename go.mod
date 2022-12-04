@@ -1,4 +1,4 @@
-module github.com/bachrc/profile-stats
+module github.com/bachrc/repo-stats
 
 go 1.17
 

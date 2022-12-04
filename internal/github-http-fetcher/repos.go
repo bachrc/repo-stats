@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Scalingo/go-utils/logger"
-	"github.com/bachrc/profile-stats/internal/domain"
+	"github.com/bachrc/repo-stats/internal/domain"
 	"net/http"
 )
 
