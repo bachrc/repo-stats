@@ -57,7 +57,12 @@ func TestFetchRepositories(t *testing.T) {
 
 		t.Run("empty repositories return empty languages", func(t *testing.T) {
 			emptyRepository := receivedRepositories[11]
-			assert.Equal(t, emptyRepository.Languages, []string{})
+			assert.Equal(t, []string{}, emptyRepository.Languages)
+		})
+
+		t.Run("should return used license", func(t *testing.T) {
+			licensedRepository := receivedRepositories[18]
+			assert.Equal(t, "mit", licensedRepository.License)
 		})
 	})
 }

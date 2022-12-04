@@ -13,6 +13,7 @@ type Repository struct {
 	Id        uint     `json:"id"`
 	Name      string   `json:"name"`
 	Languages []string `json:"languages"`
+	License   string   `json:"license"`
 }
 
 func fromDomainRepositories(domainRepositories domain.Repositories) Repositories {

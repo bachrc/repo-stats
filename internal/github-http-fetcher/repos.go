@@ -21,7 +21,7 @@ var (
 func (fetcher *GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
 	var githubPublicRepositories GithubPublicRepositories
 
-	fetcher.fetchResource(GithubPublicReposUrl, &githubPublicRepositories)
+	fetcher.FetchResource(GithubPublicReposUrl, &githubPublicRepositories)
 
 	repositories := githubPublicRepositories.toDomain()
 
@@ -44,12 +44,12 @@ func (fetcher *GithubFetcher) fetchRepositoryLanguages(repository *domain.Reposi
 
 	var githubLanguages GithubLanguagesForRepository
 
-	_ = fetcher.fetchResource(fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), &githubLanguages)
+	_ = fetcher.FetchResource(fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), &githubLanguages)
 
 	repository.Languages = githubLanguages.toDomain()
 }
 
-func (fetcher *GithubFetcher) fetchResource(url string, receiverObject interface{}) error {
+func (fetcher *GithubFetcher) FetchResource(url string, receiverObject interface{}) error {
 	request, _ := http.NewRequest(http.MethodGet, url, nil)
 
 	if fetcher.token != "" {
