@@ -61,8 +61,8 @@ func TestFetchRepositories(t *testing.T) {
 		})
 
 		t.Run("should return used license", func(t *testing.T) {
-			licensedRepository := receivedRepositories[18]
-			assert.Equal(t, "mit", licensedRepository.License)
+			repositoryWithoutLicense := receivedRepositories[16]
+			assert.Equal(t, "none", repositoryWithoutLicense.License)
 		})
 	})
 }
