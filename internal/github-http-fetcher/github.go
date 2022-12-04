@@ -11,6 +11,13 @@ type GithubPublicRepository struct {
 
 type GithubLanguagesForRepository map[string]int
 
+type GithubLicenseForRepository struct {
+	License *struct {
+		Key  string `json:"key"`
+		Name string `json:"name"`
+	} `json:"license"`
+}
+
 func (repositories GithubPublicRepositories) toDomain() domain.Repositories {
 	var domainRepositories domain.Repositories
 	for _, repository := range repositories {
@@ -21,6 +28,14 @@ func (repositories GithubPublicRepositories) toDomain() domain.Repositories {
 	}
 
 	return domainRepositories
+}
+
+func (license GithubLicenseForRepository) toDomain() string {
+	if license.License == nil {
+		return ""
+	}
+
+	return license.License.Key
 }
 
 func (githubLanguages GithubLanguagesForRepository) toDomain() []string {

@@ -30,6 +30,7 @@ func fromDomainRepository(repository domain.Repository) Repository {
 		Id:        repository.Id,
 		Name:      repository.Name,
 		Languages: repository.Languages,
+		License:   repository.License,
 	}
 }
 

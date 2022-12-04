@@ -10,9 +10,9 @@ type HTTPClient interface {
 }
 
 type GithubFetcher struct {
-	Client         HTTPClient
-	wgForLanguages sync.WaitGroup
-	token          string
+	Client HTTPClient
+	wg     sync.WaitGroup
+	token  string
 }
 
 func New(githubToken string) *GithubFetcher {

@@ -12,6 +12,7 @@ const (
 	githubApiUrl                   = "https://api.github.com"
 	GithubPublicReposUrl           = githubApiUrl + "/repositories"
 	GithubLanguagesForRepoTemplate = githubApiUrl + "/repos/%s/languages"
+	GithubLicenseForRepoTemplate   = githubApiUrl + "/repos/%s/license"
 )
 
 var (
@@ -21,20 +22,26 @@ var (
 func (fetcher *GithubFetcher) GetAllRepositories() (domain.Repositories, error) {
 	var githubPublicRepositories GithubPublicRepositories
 
-	fetcher.FetchResource(GithubPublicReposUrl, &githubPublicRepositories)
+	if err := fetcher.fetchResource(GithubPublicReposUrl, &githubPublicRepositories); err != nil {
+		return domain.Repositories{}, err
+	}
 
 	repositories := githubPublicRepositories.toDomain()
 
 	for i := range repositories {
-		fetcher.wgForLanguages.Add(1)
+		fetcher.wg.Add(2)
 		i := i
 		go func() {
 			fetcher.fetchRepositoryLanguages(&repositories[i])
-			fetcher.wgForLanguages.Done()
+			fetcher.wg.Done()
+		}()
+		go func() {
+			fetcher.fetchRepositoryLicense(&repositories[i])
+			fetcher.wg.Done()
 		}()
 	}
 
-	fetcher.wgForLanguages.Wait()
+	fetcher.wg.Wait()
 
 	return repositories, nil
 }
@@ -44,12 +51,22 @@ func (fetcher *GithubFetcher) fetchRepositoryLanguages(repository *domain.Reposi
 
 	var githubLanguages GithubLanguagesForRepository
 
-	_ = fetcher.FetchResource(fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), &githubLanguages)
+	_ = fetcher.fetchResource(fmt.Sprintf(GithubLanguagesForRepoTemplate, repository.Name), &githubLanguages)
 
 	repository.Languages = githubLanguages.toDomain()
 }
 
-func (fetcher *GithubFetcher) FetchResource(url string, receiverObject interface{}) error {
+func (fetcher *GithubFetcher) fetchRepositoryLicense(repository *domain.Repository) {
+	log.Infof("Fetching interfaces for %s", repository.Name)
+
+	var githubLicense GithubLicenseForRepository
+
+	_ = fetcher.fetchResource(fmt.Sprintf(GithubLicenseForRepoTemplate, repository.Name), &githubLicense)
+
+	repository.License = githubLicense.toDomain()
+}
+
+func (fetcher *GithubFetcher) fetchResource(url string, receiverObject interface{}) error {
 	request, _ := http.NewRequest(http.MethodGet, url, nil)
 
 	if fetcher.token != "" {
