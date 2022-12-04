@@ -17,6 +17,11 @@ var (
 			Name:      "johnny/lefeu",
 			Languages: []string{"Rust", "Java"},
 			License:   "mit",
+		}, Repository{
+			Id:        3,
+			Name:      "la/pin",
+			Languages: []string{"Kotlin"},
+			License:   "mit",
 		},
 	}
 )
@@ -42,6 +47,20 @@ func TestFiltering(t *testing.T) {
 			filteredRepos := filter.Filter(repositories)
 
 			assert.Empty(t, filteredRepos)
+		})
+	})
+
+	t.Run("License filtering", func(t *testing.T) {
+		t.Run("repositories should be filterable based on license", func(t *testing.T) {
+			filter := LicenseFilter{
+				License: "mit",
+			}
+
+			filteredRepos := filter.Filter(repositories)
+
+			assert.Len(t, filteredRepos, 2)
+			assert.Equal(t, "johnny/lefeu", filteredRepos[0].Name)
+			assert.Equal(t, "la/pin", filteredRepos[1].Name)
 		})
 	})
 }

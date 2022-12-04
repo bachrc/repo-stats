@@ -80,6 +80,29 @@ func TestFetchRepositories(t *testing.T) {
 			assert.Contains(t, receivedRepository.Languages, "C++")
 		})
 
+		t.Run("should filter repositories matching license", func(t *testing.T) {
+			var receivedRepositories Repositories
+
+			fetchResource(t, &handler, "/repos?license="+url.QueryEscape("mit"), &receivedRepositories)
+
+			assert.Len(t, receivedRepositories, 5)
+			receivedRepository := receivedRepositories[0]
+
+			assert.Equal(t, "rayvinly/badger", receivedRepository.Name)
+			assert.Equal(t, "mit", receivedRepository.License)
+		})
+
+		t.Run("should apply multiple filters at the same time", func(t *testing.T) {
+			var receivedRepositories Repositories
+
+			fetchResource(t, &handler, "/repos?license="+url.QueryEscape("mit")+"&language="+url.QueryEscape("JavaScript"), &receivedRepositories)
+
+			assert.Len(t, receivedRepositories, 1)
+			receivedRepository := receivedRepositories[0]
+
+			assert.Equal(t, "bytheway/merb-core", receivedRepository.Name)
+			assert.Equal(t, "mit", receivedRepository.License)
+		})
 	})
 }
 

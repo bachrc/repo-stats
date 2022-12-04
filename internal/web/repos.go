@@ -66,8 +66,13 @@ func (handler *ProfileStatsWebHandler) RepositoriesHandler(w http.ResponseWriter
 
 func parseRequestedFilters(params url.Values) (filters []domain.RepositoryFilter) {
 	if params.Has("language") {
-		get := params.Get("language")
-		filters = append(filters, domain.LanguageFilter{Language: get})
+		language := params.Get("language")
+		filters = append(filters, domain.LanguageFilter{Language: language})
+	}
+
+	if params.Has("license") {
+		license := params.Get("license")
+		filters = append(filters, domain.LicenseFilter{License: license})
 	}
 
 	return filters
