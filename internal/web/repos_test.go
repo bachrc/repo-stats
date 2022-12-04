@@ -65,9 +65,36 @@ func TestFetchRepositories(t *testing.T) {
 			assert.Equal(t, "none", repositoryWithoutLicense.License)
 		})
 	})
+
+	t.Run("should run filters on repositories", func(t *testing.T) {
+		t.Run("should filter repositories to include language", func(t *testing.T) {
+			var receivedRepositories Repositories
+
+			fetchResource(t, &handler, "/repos?language=C++", &receivedRepositories)
+
+			assert.Len(t, receivedRepositories, 1)
+			receivedRepository := receivedRepositories[0]
+
+			assert.Equal(t, "CodeMonkeySteve/libfinagle", receivedRepository.Name)
+			assert.Contains(t, receivedRepository.Languages, "C++")
+		})
+
+	})
 }
 
 // Test utils
+
+func fetchResource(t *testing.T, handler *ProfileStatsWebHandler, url string, receiverObject interface{}) {
+	request, _ := http.NewRequest(http.MethodGet, url, nil)
+	response := httptest.NewRecorder()
+
+	err := handler.RepositoriesHandler(response, request, nil)
+	assert.NoError(t, err)
+
+	if err := json.NewDecoder(response.Body).Decode(&receiverObject); err != nil {
+		t.Error(err)
+	}
+}
 
 type MockClient struct {
 	DoFunc func(r *http.Request) (*http.Response, error)
