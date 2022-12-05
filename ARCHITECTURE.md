@@ -3,7 +3,7 @@
 ## Overview
 
 ```mermaid
-graph LR
+flowchart LR
     subgraph webdomain[Web]
         Web[Controller]
     end
@@ -14,8 +14,8 @@ graph LR
         Github(Github)
     end
 
-    User[fa:fa-user User] --> Web 
-    Web --> Domain{{Domain}} 
+    User[fa:fa-user User] --> Web
+    Web --> Domain{{Domain}}
     Domain --> githubdomain
     Domain .-> GF
     GF-->|In production| Github
