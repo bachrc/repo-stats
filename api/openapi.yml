@@ -4,6 +4,15 @@ info:
   description: API description in Markdown.
   version: 0.0.1
 paths:
+  /ping:
+    get:
+      summary: Sends a ping...
+      description: ... to receive a pong
+
+      responses:
+        200:
+          description: OK
+
   /repos:
     get:
       summary: Returns a list of repositories.

@@ -2,8 +2,7 @@ version: '3'
 services:
   web:
     build: .
-    volumes:
-      - ./:/go/src/github.com/Scalingo/sclng-backend-test-v1
     ports:
-      - "5000:5000"
-    command: reflex -r '\.go$$' -s -- sh -c 'go build -mod=vendor && ./sclng-backend-test-v1'
+      - "2442:5000"
+    environment:
+      GITHUBACCESSTOKEN: your-access-token

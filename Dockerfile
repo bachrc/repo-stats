@@ -1,11 +1,12 @@
-FROM golang:1.17
-MAINTAINER Léo Unbekandt "leo@scalingo.com"
+FROM golang:1.19
 
-RUN go get github.com/cespare/reflex
+WORKDIR /usr/src/app
 
-WORKDIR $GOPATH/src/github.com/Scalingo/sclng-backend-test-v1
+# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 
-EXPOSE 5000
+COPY . .
+RUN go build -v -o /usr/local/bin/app github.com/bachrc/repo-stats/cmd/web
 
-CMD $GOPATH/bin/sclng-backend-test-v1
-
+CMD ["app"]
