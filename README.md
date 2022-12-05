@@ -45,3 +45,5 @@ The API description is available as an [OpenAPI file](https://editor.swagger.io/
 ## Architecture
 
 The description of the architecture is available in the [ARCHITECTURE.md](./ARCHITECTURE.md) file.
+
+A little more context about the realisation of this exercise can be found (in French) in the [CONTEXTE-EXERCICE.md](./CONTEXTE-EXERCICE.md) file. 
